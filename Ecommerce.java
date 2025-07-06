@@ -1,5 +1,30 @@
 import java.util.*;
 
+interface ShippableItem {
+    String getName();
+    double getWeight();
+}
+
+class ShippingItem implements ShippableItem {
+    private String name;
+    private double weight;
+
+    public ShippingItem(String name, double weight) {
+        this.name = name;
+        this.weight = weight;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public double getWeight() {
+        return weight;
+    }
+}
+
 class Product {
     private String name;
     private double price;
@@ -90,25 +115,26 @@ class Cart {
 public class Main {
 
     public static double calculateShipping(List<CartItem> items) {
-        double totalWeight = 0;
+        List<ShippableItem> shippingItems = new ArrayList<>();
+
         for (CartItem item : items) {
             Product p = item.getProduct();
             if (p.isShippable()) {
-                totalWeight += p.getWeightKg() * item.getQuantity();
+                shippingItems.add(new ShippingItem(p.getName(), p.getWeightKg() * item.getQuantity()));
             }
         }
 
-        if (totalWeight > 0) {
-            System.out.println("\n** Shipment notice **");
-            for (CartItem item : items) {
-                Product p = item.getProduct();
-                if (p.isShippable()) {
-                    System.out.println(item.getQuantity() + "x " + p.getName() + " " + (int)(p.getWeightKg() * item.getQuantity() * 1000) + "g");
-                }
-            }
-            System.out.printf("Total package weight %.1fkg\n", totalWeight);
+        if (shippingItems.isEmpty()) return 0;
+
+        double totalWeight = 0;
+        System.out.println("\n** Shipment notice **");
+        for (ShippableItem item : shippingItems) {
+            System.out.println(item.getName() + " " + (int)(item.getWeight() * 1000) + "g");
+            totalWeight += item.getWeight();
         }
-        return totalWeight * 30; // 30 per kg
+        System.out.printf("Total package weight %.1fkg\n", totalWeight);
+
+        return totalWeight * 30; // Shipping cost: 30 per kg
     }
 
     public static void checkout(Customer customer, Cart cart) {
