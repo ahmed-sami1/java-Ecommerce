@@ -17,7 +17,7 @@ It simulates adding items to a cart, checks for product expiration, calculates s
 
 ---
 
-##  How to Run
 
-###  Requirements:
-- Java JDK installed (version 8+ recommended)
+## 📸 Screenshot
+
+![Sample Output](output.jpg)
